@@ -1,4 +1,4 @@
-package org.afs.pakinglot.domain.strategies;
+package org.afs.pakinglot.strategies.parkingStrategy;
 
 
 import org.afs.pakinglot.domain.ParkingLot;

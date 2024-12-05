@@ -1,4 +1,4 @@
-package org.afs.pakinglot.domain.exception;
+package org.afs.pakinglot.exception;
 
 public class NoAvailablePositionException extends RuntimeException {
     public NoAvailablePositionException() {

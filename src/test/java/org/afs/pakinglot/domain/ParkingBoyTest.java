@@ -1,7 +1,7 @@
 package org.afs.pakinglot.domain;
 
-import org.afs.pakinglot.domain.exception.NoAvailablePositionException;
-import org.afs.pakinglot.domain.exception.UnrecognizedTicketException;
+import org.afs.pakinglot.exception.NoAvailablePositionException;
+import org.afs.pakinglot.exception.UnrecognizedTicketException;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
