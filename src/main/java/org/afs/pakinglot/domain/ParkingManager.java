@@ -1,5 +1,6 @@
 package org.afs.pakinglot.domain;
 
+import lombok.Data;
 import org.afs.pakinglot.exception.UnrecognizedTicketException;
 import org.afs.pakinglot.strategies.parkingStrategy.AvailableRateStrategy;
 import org.afs.pakinglot.strategies.parkingStrategy.MaxAvailableStrategy;
@@ -8,6 +9,7 @@ import org.afs.pakinglot.strategies.parkingStrategy.SequentiallyStrategy;
 import java.util.List;
 import java.util.Optional;
 
+@Data
 public class ParkingManager {
     private static final String STANDARD = "Standard";
     private static final String SMART = "Smart";
@@ -23,15 +25,15 @@ public class ParkingManager {
                 new ParkingLot(3, "Office Tower Parking", 9)
         );
 
+        parkingLots.get(0).park(new Car("ABC123"));
+        parkingLots.get(1).park(new Car("XYZ789"));
+        parkingLots.get(2).park(new Car("LMN456"));
+
         parkingBoys = List.of(
                 new ParkingBoy(parkingLots, new SequentiallyStrategy()),
                 new ParkingBoy(parkingLots, new MaxAvailableStrategy()),
                 new ParkingBoy(parkingLots, new AvailableRateStrategy())
         );
-    }
-
-    public List<ParkingLot> getParkingLots() {
-        return parkingLots;
     }
 
     public Ticket park(Car car, String strategyType) {
