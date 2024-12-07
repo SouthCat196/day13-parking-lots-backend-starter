@@ -1,5 +1,6 @@
 package org.afs.pakinglot.domain;
 
+import lombok.Data;
 import org.afs.pakinglot.domain.dto.FetchResponse;
 import org.afs.pakinglot.exception.NoAvailablePositionException;
 import org.afs.pakinglot.exception.UnrecognizedTicketException;
@@ -10,13 +11,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Data
 public class ParkingLot {
+    public static final int TOLL_CYCLE = 14;
+    public static final double TOLL_CYCLE_FEE = 4.0;
     private int id;
     private String name;
     private final Map<Ticket, Car> tickets = new HashMap<>();
 
     private static final int DEFAULT_CAPACITY = 10;
     private final int capacity;
+
+    private static final double FEE_PER_HOUR = 5.0;
 
     public ParkingLot() {
         this(DEFAULT_CAPACITY);
@@ -30,10 +36,6 @@ public class ParkingLot {
         this.id = id;
         this.name = name;
         this.capacity = capacity;
-    }
-
-    public int getCapacity() {
-        return capacity;
     }
 
     public int getAvailableCapacity() {
@@ -73,13 +75,20 @@ public class ParkingLot {
                 .findFirst()
                 .orElse(null);
 
-        if(existTicket == null) {
+        if (existTicket == null) {
             throw new UnrecognizedTicketException();
         }
 
         Car fetchedCar = tickets.remove(existTicket);
-        long parkingDuration = Duration.between(existTicket.getParkTime(), LocalDateTime.now()).toMinutes();
-        return new FetchResponse(fetchedCar, parkingDuration);
+        Duration parkingDuration = Duration.between(existTicket.getParkTime(), LocalDateTime.now());
+        double parkingFee = calculateParkingFee(parkingDuration);
+        return new FetchResponse(fetchedCar, parkingDuration.toMinutes(), parkingFee);
+    }
+
+    private double calculateParkingFee(Duration duration) {
+        long minutes = duration.toMinutes();
+        long quarters = (minutes + TOLL_CYCLE - 1) / TOLL_CYCLE;
+        return quarters * TOLL_CYCLE_FEE;
     }
 
     public boolean contains(Ticket ticket) {
@@ -88,14 +97,6 @@ public class ParkingLot {
 
     public double getAvailablePositionRate() {
         return getAvailableCapacity() / (double) capacity;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public List<Ticket> getTickets() {

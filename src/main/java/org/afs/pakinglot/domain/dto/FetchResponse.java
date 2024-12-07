@@ -7,9 +7,11 @@ import org.afs.pakinglot.domain.Car;
 public class FetchResponse {
     private final Car car;
     private final long parkingDuration;
+    private final double parkingFee;
 
-    public FetchResponse(Car car, long parkingDuration) {
+    public FetchResponse(Car car, long parkingDuration, double parkingFee) {
         this.car = car;
         this.parkingDuration = parkingDuration;
+        this.parkingFee = parkingFee;
     }
 }
