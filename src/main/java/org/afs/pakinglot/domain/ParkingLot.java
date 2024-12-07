@@ -2,6 +2,7 @@ package org.afs.pakinglot.domain;
 
 import lombok.Data;
 import org.afs.pakinglot.domain.dto.FetchResponse;
+import org.afs.pakinglot.exception.CarAlreadyParkedException;
 import org.afs.pakinglot.exception.NoAvailablePositionException;
 import org.afs.pakinglot.exception.UnrecognizedTicketException;
 
@@ -46,7 +47,9 @@ public class ParkingLot {
         if (isFull()) {
             throw new NoAvailablePositionException();
         }
-
+        if (tickets.values().stream().anyMatch(parkedCar -> parkedCar.plateNumber().equals(car.plateNumber()))) {
+            throw new CarAlreadyParkedException();
+        }
         int nextPosition = getNextAvailablePosition();
         Ticket ticket = new Ticket(car.plateNumber(), nextPosition, this.id, LocalDateTime.now());
         tickets.put(ticket, car);
