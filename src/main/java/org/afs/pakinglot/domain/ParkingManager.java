@@ -5,11 +5,13 @@ import org.afs.pakinglot.exception.UnrecognizedTicketException;
 import org.afs.pakinglot.strategies.parkingStrategy.AvailableRateStrategy;
 import org.afs.pakinglot.strategies.parkingStrategy.MaxAvailableStrategy;
 import org.afs.pakinglot.strategies.parkingStrategy.SequentiallyStrategy;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
 @Data
+@Component
 public class ParkingManager {
     private static final String STANDARD = "Standard";
     private static final String SMART = "Smart";

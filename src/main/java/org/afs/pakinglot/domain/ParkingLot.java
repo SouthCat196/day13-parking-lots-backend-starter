@@ -42,9 +42,22 @@ public class ParkingLot {
             throw new NoAvailablePositionException();
         }
 
-        Ticket ticket = new Ticket(car.plateNumber(), tickets.size() + 1, this.id);
+        int nextPosition = getNextAvailablePosition();
+        Ticket ticket = new Ticket(car.plateNumber(), nextPosition, this.id);
         tickets.put(ticket, car);
         return ticket;
+    }
+
+    private int getNextAvailablePosition() {
+        for (int i = 1; i <= capacity; i++) {
+            int finalI = i;
+            boolean positionTaken = tickets.keySet().stream()
+                .anyMatch(ticket -> ticket.position() == finalI);
+            if (!positionTaken) {
+                return i;
+            }
+        }
+        throw new NoAvailablePositionException();
     }
 
     public boolean isFull() {
