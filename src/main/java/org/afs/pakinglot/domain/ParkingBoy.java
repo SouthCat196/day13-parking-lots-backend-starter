@@ -3,6 +3,8 @@ package org.afs.pakinglot.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.afs.pakinglot.domain.dto.FetchResponse;
 import org.afs.pakinglot.exception.UnrecognizedTicketException;
 import org.afs.pakinglot.strategies.parkingStrategy.ParkingStrategy;
 import org.afs.pakinglot.strategies.parkingStrategy.SequentiallyStrategy;
@@ -28,7 +30,7 @@ public class ParkingBoy {
         return parkingStrategy.findParkingLot(parkingLots).park(car);
     }
 
-    public Car fetch(Ticket ticket) {
+    public FetchResponse fetch(Ticket ticket) {
         ParkingLot parkingLotOfTheTicket = parkingLots.stream()
             .filter(parkingLot -> parkingLot.contains(ticket))
             .findFirst()

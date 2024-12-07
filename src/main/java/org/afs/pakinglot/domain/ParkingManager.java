@@ -1,12 +1,14 @@
 package org.afs.pakinglot.domain;
 
 import lombok.Data;
+import org.afs.pakinglot.domain.dto.FetchResponse;
 import org.afs.pakinglot.exception.UnrecognizedTicketException;
 import org.afs.pakinglot.strategies.parkingStrategy.AvailableRateStrategy;
 import org.afs.pakinglot.strategies.parkingStrategy.MaxAvailableStrategy;
 import org.afs.pakinglot.strategies.parkingStrategy.SequentiallyStrategy;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +45,7 @@ public class ParkingManager {
         return parkingBoy.park(car);
     }
 
-    public Car fetch(Ticket ticket) {
+    public FetchResponse fetch(Ticket ticket) {
         Optional<ParkingLot> parkingLot = parkingLots.stream()
                 .filter(lot -> lot.contains(ticket))
                 .findFirst();
@@ -63,4 +65,5 @@ public class ParkingManager {
             default -> throw new IllegalArgumentException("Invalid strategy type: " + strategyType);
         };
     }
+
 }

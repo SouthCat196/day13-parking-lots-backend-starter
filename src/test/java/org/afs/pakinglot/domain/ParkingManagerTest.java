@@ -50,7 +50,7 @@ class ParkingManagerTest {
         Ticket ticket = parkingManager.park(car, "Standard");
 
         // When
-        Car fetchedCar = parkingManager.fetch(ticket);
+        Car fetchedCar = parkingManager.fetch(ticket).getCar();
 
         // Then
         assertEquals(car, fetchedCar);

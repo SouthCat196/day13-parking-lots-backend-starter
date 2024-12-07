@@ -4,6 +4,8 @@ import org.afs.pakinglot.domain.Car;
 import org.afs.pakinglot.domain.ParkingLot;
 import org.afs.pakinglot.domain.ParkingManager;
 import org.afs.pakinglot.domain.Ticket;
+import org.afs.pakinglot.domain.dto.FetchRequest;
+import org.afs.pakinglot.domain.dto.FetchResponse;
 import org.afs.pakinglot.domain.dto.ParkingLotResponse;
 import org.afs.pakinglot.domain.dto.TicketResponse;
 import org.springframework.http.ResponseEntity;
@@ -45,9 +47,9 @@ public class ParkingController {
                         parkingLot.getCapacity(),
                         parkingLot.getTickets().stream()
                                 .map(ticket -> new TicketResponse(
-                                        ticket.plateNumber(),
-                                        ticket.position(),
-                                        ticket.parkingLot()))
+                                        ticket.getPlateNumber(),
+                                        ticket.getPosition(),
+                                        ticket.getParkingLot()))
                                 .toList()))
                 .toList();
         return ResponseEntity.ok(response);
@@ -60,8 +62,8 @@ public class ParkingController {
     }
 
     @PostMapping("/fetch")
-    public ResponseEntity<Car> fetch(@RequestBody Ticket ticket) {
-        Car car = parkingManager.fetch(ticket);
-        return ResponseEntity.ok(car);
+    public ResponseEntity<FetchResponse> fetch(@RequestBody FetchRequest fetchRequest) {
+        Ticket ticket = new Ticket(fetchRequest.getPlateNumber(), fetchRequest.getPosition(), fetchRequest.getParkingLot(), null);
+        return ResponseEntity.ok(parkingManager.fetch(ticket));
     }
 }

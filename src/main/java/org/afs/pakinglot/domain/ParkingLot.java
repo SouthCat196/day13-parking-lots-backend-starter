@@ -1,11 +1,14 @@
 package org.afs.pakinglot.domain;
 
+import org.afs.pakinglot.domain.dto.FetchResponse;
+import org.afs.pakinglot.exception.NoAvailablePositionException;
+import org.afs.pakinglot.exception.UnrecognizedTicketException;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.afs.pakinglot.exception.NoAvailablePositionException;
-import org.afs.pakinglot.exception.UnrecognizedTicketException;
 
 public class ParkingLot {
     private int id;
@@ -43,7 +46,7 @@ public class ParkingLot {
         }
 
         int nextPosition = getNextAvailablePosition();
-        Ticket ticket = new Ticket(car.plateNumber(), nextPosition, this.id);
+        Ticket ticket = new Ticket(car.plateNumber(), nextPosition, this.id, LocalDateTime.now());
         tickets.put(ticket, car);
         return ticket;
     }
@@ -52,7 +55,7 @@ public class ParkingLot {
         for (int i = 1; i <= capacity; i++) {
             int finalI = i;
             boolean positionTaken = tickets.keySet().stream()
-                .anyMatch(ticket -> ticket.position() == finalI);
+                    .anyMatch(ticket -> ticket.getPosition() == finalI);
             if (!positionTaken) {
                 return i;
             }
@@ -64,12 +67,19 @@ public class ParkingLot {
         return capacity == tickets.size();
     }
 
-    public Car fetch(Ticket ticket) {
-        if (!tickets.containsKey(ticket)) {
+    public FetchResponse fetch(Ticket ticket) {
+        Ticket existTicket = tickets.keySet().stream()
+                .filter(t -> t.equals(ticket))
+                .findFirst()
+                .orElse(null);
+
+        if(existTicket == null) {
             throw new UnrecognizedTicketException();
         }
 
-        return tickets.remove(ticket);
+        Car fetchedCar = tickets.remove(existTicket);
+        long parkingDuration = Duration.between(existTicket.getParkTime(), LocalDateTime.now()).toMinutes();
+        return new FetchResponse(fetchedCar, parkingDuration);
     }
 
     public boolean contains(Ticket ticket) {
